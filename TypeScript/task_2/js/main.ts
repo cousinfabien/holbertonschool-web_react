@@ -56,3 +56,45 @@ function createEmployee(salary: number | string): Director | Teacher {
 console.log(createEmployee(200));    // Doit afficher une instance de Teacher
 console.log(createEmployee(1000));   // Doit afficher une instance de Director
 console.log(createEmployee('$500')); // Doit afficher une instance de Director
+
+// 1. Fonction isDirector utilisant un Type Predicate (employee is Director)
+function isDirector(employee: Director | Teacher): employee is Director {
+  return (employee as Director).workDirectorTasks !== undefined;
+}
+
+// 2. Fonction executeWork qui adapte le comportement selon le type d'employé
+function executeWork(employee: Director | Teacher): string {
+  if (isDirector(employee)) {
+    return employee.workDirectorTasks();
+  }
+  return employee.workTeacherTasks();
+}
+
+// Exemples de test de l'énoncé
+console.log(executeWork(createEmployee(200)));  // Doit afficher : Getting to work
+console.log(executeWork(createEmployee(1000))); // Doit afficher : Getting to director tasks
+
+// 1. Définition du String Literal Type 'Subjects'
+type Subjects = 'Math' | 'History';
+
+// 2. Écriture de la fonction teachClass
+function teachClass(todayClass: Subjects): string {
+  if (todayClass === 'Math') {
+    return 'Teaching Math';
+  }
+  if (todayClass === 'History') {
+    return 'Teaching History';
+  }
+  // Optionnel mais recommandé pour la sécurité des types : une sécurité si une valeur improbable arrivait
+  throw new Error('Unknown subject');
+}
+
+// Exemples d'utilisation de l'énoncé pour tester
+console.log(teachClass('Math'));    // Doit afficher : Teaching Math
+console.log(teachClass('History')); // Doit afficher : Teaching History
+
+// Exemple de ce qui se passe si on fait une erreur :
+// teachClass('French'); 
+// -> Le compilateur TypeScript bloquera DIRECTEMENT avec une erreur !
+
+
